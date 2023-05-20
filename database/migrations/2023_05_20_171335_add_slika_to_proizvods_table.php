@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNarudzbinasTable extends Migration
+class AddSlikaToProizvodsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class CreateNarudzbinasTable extends Migration
      */
     public function up()
     {
-        Schema::create('narudzbinas', function (Blueprint $table) {
-            $table->id();
-            $table->date('datum');
-            $table->foreignId('korisnik_id');
-            $table->foreignId('proizvod_id');
-            $table->timestamps();
+        Schema::table('proizvods', function (Blueprint $table) {
+            $table->string("slika");
         });
     }
 
@@ -29,6 +25,8 @@ class CreateNarudzbinasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('narudzbinas');
+        Schema::table('proizvods', function (Blueprint $table) {
+            $table->removeColumn("slika");
+        });
     }
 }
