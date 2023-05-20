@@ -17,7 +17,13 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/proizvodi', [ProizvodController::class, 'index']);
 Route::get('/proizvodi/{id}', [ProizvodController::class, 'show']);
-
+Route::delete('/proizvodi/{id}', [ProizvodController::class, 'destroy']);
+Route::post('/proizvodi', [ProizvodController::class, 'store']);
+Route::put('/proizvodi/{id}', [ProizvodController::class, 'update']);
 
 Route::get('/order', [NarudzbinaController::class, 'index']);
 Route::get('/order/{id}', [NarudzbinaController::class, 'show']);
+
+
+
+

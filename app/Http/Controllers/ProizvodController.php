@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ProizvodResource;
 use App\Models\Proizvod;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProizvodController extends Controller
 {
@@ -36,7 +37,22 @@ class ProizvodController extends Controller
      */
     public function store(Request $request) //POST
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'naziv' => 'required',
+            'opis' => 'required',
+            'cena' => 'required|numeric',
+            'kategorija_id' => 'required|exists:kategorijas,id',
+            'slika' => 'required',
+ 
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['poruka' => 'Validacija nije prošla.', 'greske' => $validator->errors()], 400);
+        }
+
+        $proizvod = Proizvod::create($request->all());
+
+        return response()->json(['poruka' => 'Proizvod je uspešno kreiran.', 'proizvod' => $proizvod], 201);
     }
 
     /**
@@ -70,7 +86,27 @@ class ProizvodController extends Controller
      */
     public function update(Request $request, $id)  //PUT
     {
-        //
+        $proizvod = Proizvod::find($id);
+
+        if (!$proizvod) {
+            return response()->json(['poruka' => 'Proizvod nije pronađen.'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'naziv' => 'required',
+            'opis' => 'required',
+            'cena' => 'required|numeric',
+            'kategorija_id' => 'required|exists:kategorijas,id',
+            
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['poruka' => 'Validacija nije prošla.', 'greske' => $validator->errors()], 400);
+        }
+
+        $proizvod->update($request->all());
+
+        return response()->json(['poruka' => 'Proizvod je uspešno ažuriran.', 'proizvod' => $proizvod], 200);
     }
 
     /**
@@ -84,6 +120,9 @@ class ProizvodController extends Controller
         $p = Proizvod::find($id);
         if($p){
             $p->delete();
+            return response()->json(['poruka' => 'Proizvod je uspešno obrisan.'], 200);
+        }else{
+            return response()->json(['poruka' => 'Proizvod nije pronađen.'], 404);
         }
     }
 }
